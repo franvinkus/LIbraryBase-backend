@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Library.Entities;
 using LibraryBase.Query;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryBase.Controllers
 {
-    [Route("api/LibraryBase")]
+    [Route("api/LibraryBase/Auth")]
     [ApiController]
     public class AuthContoller : ControllerBase
     {
