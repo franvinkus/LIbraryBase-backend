@@ -2,6 +2,7 @@
 using LibraryBase.Model;
 using LibraryBase.Query;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryBase.Handler
 {
@@ -16,17 +17,22 @@ namespace LibraryBase.Handler
         {
             var newBooks = new Book
             {
-                CategoryId = request.cateId,
                 Title = request.title,
                 Author = request.author,
                 Description = request.description
             };
 
+            var categories = await _db.Categories
+                .Where(c => request.categoryIds.Contains(c.CategoryId))
+                .ToListAsync(cancellationToken);
+
+            newBooks.Categories = categories;
+
             _db.Books.Add(newBooks);
 
             var response = new PostBooksModel
             {
-                cateId = request.cateId,
+                categoryIds = request.categoryIds,
                 title = request.title,
                 author = request.author,
                 description = request.description

@@ -16,12 +16,12 @@ namespace LibraryBase.Handler
         public async Task<List<GetBooksModel>> Handle(GetBooksQuery request, CancellationToken cancellationToken)
         {
             var datas = await _db.Books
-                .Include(c => c.Category)
+                .Include(c => c.Categories)
                 .Select(x => new GetBooksModel
                 {
                     bookId = x.BookId,
-                    cateId = x.CategoryId,
-                    categoryName = x.Category.CategoryName,
+                    categoryIds = x.Categories.Select(c => c.CategoryId).ToList(),
+                    categoryNames = x.Categories.Select(c => c.CategoryName).ToList(),
                     title = x.Title,
                     author = x.Author,
                     description = x.Description,

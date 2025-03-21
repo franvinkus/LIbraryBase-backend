@@ -15,30 +15,40 @@ namespace LibraryBase.Handler
         }
         public async Task<PutBooksModel> Handle(PutBooksQueryWithId request, CancellationToken cancellationToken)
         {
-            var isBookExist = await _db.Books
+            var book = await _db.Books
                 .Where(x => x.BookId == request.bookId)
                 .FirstOrDefaultAsync();
 
-            if (isBookExist == null)
+            if (book == null)
             {
                 throw new Exception("There is such book");
             }
 
-            isBookExist.CategoryId = request.cateId;
-            isBookExist.Title = request.title;
-            isBookExist.Author = request.author;
-            isBookExist.Description = request.description;
-            isBookExist.UpdatedAt = DateTime.UtcNow;
-            isBookExist.UpdatedBy = request.updatedBy;
+            book.Categories.Clear();
+
+            var newCategories = await _db.Categories
+                .Where(x => request.categoryIds.Contains(x.CategoryId))
+                .ToListAsync(cancellationToken);
+
+            foreach (var category in newCategories) 
+            {
+                book.Categories.Add(category);
+            }
+
+            book.Title = request.title;
+            book.Author = request.author;
+            book.Description = request.description;
+            book.UpdatedAt = DateTime.UtcNow;
+            book.UpdatedBy = request.updatedBy;
 
             var response = new PutBooksModel
             {
-                cateId = request.cateId,
+                categoryIds = request.categoryIds,
                 title = request.title,
                 author = request.author,
                 description = request.description,
                 updatedBy = request.updatedBy,
-                updatedAt = isBookExist.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? ""
+                updatedAt = book.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? ""
             };
 
             await _db.SaveChangesAsync(cancellationToken);

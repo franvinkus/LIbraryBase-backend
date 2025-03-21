@@ -7,7 +7,7 @@ namespace LibraryBase.Query
     public class PutBooksQuery : IRequest<PutBooksModel>
     {
 
-        public int cateId { get; set; }
+        public List<int> categoryIds { get; set; } = new();
 
         public string title { get; set; } = string.Empty;
 

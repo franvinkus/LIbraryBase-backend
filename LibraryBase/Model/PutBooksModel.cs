@@ -6,7 +6,7 @@ namespace LibraryBase.Model
     public class PutBooksModel
     {
         [Required]
-        public int cateId { get; set; }
+        public List<int> categoryIds { get; set; } = new();
         [Required]
         public string title { get; set; } = string.Empty;
         [Required]

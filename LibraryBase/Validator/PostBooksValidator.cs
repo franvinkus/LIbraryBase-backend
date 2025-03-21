@@ -7,9 +7,13 @@ namespace LibraryBase.Validator
     {
         public PostBooksValidator() 
         {
-            RuleFor(x => x.cateId)
+            RuleFor(x => x.categoryIds)
+               .NotEmpty()
+               .WithMessage("CategoryIds cannot be empty");
+
+            RuleForEach(x => x.categoryIds)
                 .GreaterThan(0)
-                .WithMessage("Id starts from 1");
+                .WithMessage("Each categoryId must be greater than 0");
 
             RuleFor(x => x.title)
                 .NotEmpty()

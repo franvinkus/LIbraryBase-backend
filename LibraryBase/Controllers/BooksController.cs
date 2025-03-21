@@ -76,7 +76,7 @@ namespace LibraryBase.Controllers
             var result = await _mediator.Send(new PutBooksQueryWithId
             {
                 bookId = id,
-                cateId = dto.cateId,
+                categoryIds = dto.categoryIds,
                 title = dto.title,
                 author = dto.author,
                 description = dto.description,
