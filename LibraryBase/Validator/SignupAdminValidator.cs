@@ -3,9 +3,9 @@ using LibraryBase.Query;
 
 namespace LibraryBase.Validator
 {
-    public class SignupAdminValidation : AbstractValidator<SignupAdminQuery>
+    public class SignupAdminValidator : AbstractValidator<SignupAdminQuery>
     {
-        public SignupAdminValidation() 
+        public SignupAdminValidator() 
         {
             RuleFor(x => x.userName)
                 .NotEmpty()

@@ -3,9 +3,9 @@ using LibraryBase.Query;
 
 namespace LibraryBase.Validator
 {
-    public class PostCategoryValidation : AbstractValidator<PostCategoryQuery>
+    public class PostCategoryValidator : AbstractValidator<PostCategoryQuery>
     {
-        public PostCategoryValidation() 
+        public PostCategoryValidator() 
         {
             RuleFor(x => x.categoryName)
                 .NotEmpty()

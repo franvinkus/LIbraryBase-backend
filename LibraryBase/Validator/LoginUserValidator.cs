@@ -3,9 +3,9 @@ using LibraryBase.Query;
 
 namespace LibraryBase.Validator
 {
-    public class LoginUserValidation : AbstractValidator<LoginUserQuery>
+    public class LoginUserValidator : AbstractValidator<LoginUserQuery>
     {
-        public LoginUserValidation() 
+        public LoginUserValidator() 
         {
             RuleFor(x => x.password)
                 .NotEmpty()
