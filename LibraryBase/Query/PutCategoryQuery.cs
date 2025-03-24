@@ -7,7 +7,5 @@ namespace LibraryBase.Query
     public class PutCategoryQuery : IRequest<PutCategoryModel>
     {
         public string categoryName { get; set; } = string.Empty;
-        [JsonIgnore]
-        public int updatedBy { get; set; }
     }
 }

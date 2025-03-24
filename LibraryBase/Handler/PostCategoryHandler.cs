@@ -17,7 +17,6 @@ namespace LibraryBase.Handler
             var newCategory = new Category
             {
                 CategoryName = request.categoryName,
-                CreatedBy = request.createdBy,
             };
 
             _db.Categories.Add(newCategory);
@@ -25,7 +24,6 @@ namespace LibraryBase.Handler
             var response = new PostCategoryModel
             {
                 categoryName = request.categoryName,
-                createdBy = request.createdBy
             };
 
             await _db.SaveChangesAsync(cancellationToken);

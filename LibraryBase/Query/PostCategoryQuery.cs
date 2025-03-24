@@ -7,7 +7,5 @@ namespace LibraryBase.Query
     public class PostCategoryQuery : IRequest<PostCategoryModel>
     {
         public string categoryName { get; set; } = string.Empty;
-        [JsonIgnore]
-        public int createdBy { get; set; }
     }
 }

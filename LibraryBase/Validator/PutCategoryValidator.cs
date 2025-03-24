@@ -11,9 +11,6 @@ namespace LibraryBase.Validator
             RuleFor(x => x.categoryName)
                 .NotEmpty()
                 .WithMessage("This field must be filled");
-
-            RuleFor(x => x.updatedBy)
-                .GreaterThan(0);
         }
     }
 }

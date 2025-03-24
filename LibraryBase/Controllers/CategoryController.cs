@@ -46,7 +46,12 @@ namespace LibraryBase.Controllers
                 return Unauthorized(new { message = "Admin belum login" });
             }
 
-            dto.createdBy = adminId.Value;
+            var cmd = new PostCategoryCommand
+            {
+                categoryName = dto.categoryName,
+                createdBy = adminId.Value
+
+            };
             var result = await _mediator.Send(dto);
             return Ok(result);
         }
@@ -72,6 +77,7 @@ namespace LibraryBase.Controllers
             {
                 categoryId = id,
                 categoryName = dto.categoryName
+
             });
             return Ok(result);
         }

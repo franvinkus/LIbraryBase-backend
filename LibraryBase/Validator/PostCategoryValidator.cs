@@ -11,8 +11,6 @@ namespace LibraryBase.Validator
                 .NotEmpty()
                 .WithMessage("Category name cannot be empty");
 
-            RuleFor(x => x.createdBy)
-                .GreaterThan(0);
         }
     }
 }
