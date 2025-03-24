@@ -66,6 +66,13 @@ namespace LibraryBase.Controllers
             }
             var send = await _mediator.Send(dto);
             HttpContext.Session.SetInt32("UserId", send.userId);
+
+            var sessionUser = HttpContext.Session.GetString("UserId");
+            Console.WriteLine("🔍 SESSION DI BACKEND (sebelum set): " + sessionUser);
+
+            HttpContext.Session.SetString("UserId", send.userId.ToString());
+
+
             return Ok(send);
         }
 

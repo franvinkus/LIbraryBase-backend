@@ -31,7 +31,7 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddDistributedMemoryCache(); // Memory cache untuk session
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Session timeout
+    options.IdleTimeout = TimeSpan.FromHours(3); // Session timeout
     options.Cookie.SameSite = SameSiteMode.None;
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     options.Cookie.HttpOnly = true;
@@ -46,7 +46,7 @@ builder.Services.AddCors(options =>
             policy.WithOrigins("http://localhost:3000")
                   .AllowAnyHeader()
                   .AllowAnyMethod()
-                  .AllowCredentials(); // <- wajib ada ini
+                  .AllowCredentials();
         });
 });
 
@@ -61,6 +61,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowFrontend");
+
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+    MinimumSameSitePolicy = SameSiteMode.None,
+    Secure = CookieSecurePolicy.Always
+});
 
 app.UseSession();
 
