@@ -1,4 +1,5 @@
-﻿using Azure.Core;
+﻿using System.Security.Claims;
+using Azure.Core;
 using FluentValidation;
 using Library.Entities;
 using LibraryBase.Model;
@@ -43,19 +44,26 @@ namespace LibraryBase.Controllers
         public async Task<IActionResult> Post([FromBody] PostCategoryQuery dto)
         {
             var validation = _postCateValidator.Validate(dto);
-            var adminId = HttpContext.Session.GetInt32("AdminID");
-            if (adminId == null)
+            if (!validation.IsValid)
             {
-                return Unauthorized(new { message = "Admin belum login" });
+                return BadRequest(new { message = "Validation failed", errors = validation.Errors });
             }
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new { message = "Unauthorized: UserId not found" });
+            }
+
+            var adminId = int.Parse(userId);
 
             var cmd = new PostCategoryCommand
             {
                 categoryName = dto.categoryName,
-                createdBy = adminId.Value
+                createdBy = adminId
 
             };
-            var result = await _mediator.Send(dto);
+            var result = await _mediator.Send(cmd);
             return Ok(result);
         }
 
@@ -77,7 +85,12 @@ namespace LibraryBase.Controllers
                     Extensions = { ["errors"] = validation.Errors.ToDictionary(e => e.PropertyName, e => e.ErrorMessage) }
                 });
             }
-            var result = await _mediator.Send(dto);
+            var queryWithId = new PutCategoryQueryWithId
+            {
+                cateId = id,
+                cateName = dto.categoryName
+            };
+            var result = await _mediator.Send(queryWithId);
             return Ok(result);
         }
 

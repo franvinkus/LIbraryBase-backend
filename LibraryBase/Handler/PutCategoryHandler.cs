@@ -1,4 +1,5 @@
-﻿using Library.Entities;
+﻿using System.Security.Claims;
+using Library.Entities;
 using LibraryBase.Model;
 using LibraryBase.Query;
 using MediatR;
@@ -6,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LibraryBase.Handler
 {
-    public class PutCategoryHandler : IRequestHandler<PutCategoryQuery, PutCategoryModel>
+    public class PutCategoryHandler : IRequestHandler<PutCategoryQueryWithId, PutCategoryModel>
     {
         public readonly LibraryBaseContext _db;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -15,7 +16,7 @@ namespace LibraryBase.Handler
             _db = db;
             _httpContextAccessor = httpContextAccessor;
         }
-        public async Task<PutCategoryModel> Handle(PutCategoryQuery request, CancellationToken cancellationToken)
+        public async Task<PutCategoryModel> Handle(PutCategoryQueryWithId request, CancellationToken cancellationToken)
         {
             var category = await _db.Categories
                 .Where(x => x.CategoryId == request.cateId)
@@ -26,18 +27,18 @@ namespace LibraryBase.Handler
                 throw new Exception("Id is not found");
             }
 
-            var httpContext = _httpContextAccessor.HttpContext;
-            var updatedBy = httpContext?.Session.GetInt32("UserId") ?? 0;
+            var userIdString = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = int.Parse(userIdString);
 
-            category.CategoryName = request.categoryName;
+            category.CategoryName = request.cateName;
             category.UpdatedAt = DateTime.UtcNow;
-            category.UpdatedBy = updatedBy;
+            category.UpdatedBy = userId;
 
             var updatedData = new PutCategoryModel
             {
                 categoryName = category.CategoryName,
                 updatedAt = category.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "",
-                updatedBy = updatedBy,
+                updatedBy = userId,
             };
 
             await _db.SaveChangesAsync(cancellationToken);
