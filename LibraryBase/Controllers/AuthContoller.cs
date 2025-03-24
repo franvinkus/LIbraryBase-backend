@@ -69,7 +69,7 @@ namespace LibraryBase.Controllers
             var send = await _mediator.Send(dto);
             var token = _jwtHelper.GenerateToken(send.userId.ToString(), send.role);
 
-            return Ok(send);
+            return Ok(new { token = token, data = send });
         }
 
         [HttpPost("SignUp/Admin")]

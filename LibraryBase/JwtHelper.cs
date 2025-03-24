@@ -16,6 +16,7 @@ public class JwtHelper
 
     public string GenerateToken(string userId, string role)
     {
+        //Console.WriteLine($"JWT SECRET: {_jwtSettings.Secret}");
 
         var claims = new[]
         {
