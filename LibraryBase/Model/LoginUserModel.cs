@@ -9,6 +9,7 @@ namespace LibraryBase.Model
         public string userName {  get; set; } = string.Empty;
         [Required]
         public string email { get; set; } = string.Empty;
+        public string role { get; set; } = string.Empty;
         public string msg { get; set; } = string.Empty;
     }
 }

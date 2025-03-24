@@ -23,7 +23,7 @@ namespace LibraryBase.Handler
 
             if (user == null)
             {
-                throw new Exception("User not Found");
+                throw new UnauthorizedAccessException("Invalid credentials");
             }
 
             if(user.PasswordHash != request.password)
@@ -36,6 +36,7 @@ namespace LibraryBase.Handler
                 userId = user.UserId,
                 userName = request.userName,
                 email = request.email,
+                role = user.Role.RoleName,
                 msg = $"Login Successful, {user.Username}, {user.Role.RoleName}"
             };
         }

@@ -2,12 +2,15 @@ using System.Reflection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Library.Entities;
+using LibraryBase;
 using LibraryBase.Validator;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
+var jwtSettings = configuration.GetSection("JwtSettings");
 
 // Add services to the container.
 
@@ -28,15 +31,32 @@ builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 builder.Services.AddValidatorsFromAssemblyContaining<SignupCustomerValidator>();
 builder.Services.AddFluentValidationAutoValidation();
 
-builder.Services.AddDistributedMemoryCache(); // Memory cache untuk session
-builder.Services.AddSession(options =>
+builder.Services.Configure<JwtSettings>(jwtSettings);
+
+builder.Services.AddAuthentication(options =>
 {
-    options.IdleTimeout = TimeSpan.FromHours(3); // Session timeout
-    options.Cookie.SameSite = SameSiteMode.None;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
+            System.Text.Encoding.UTF8.GetBytes(jwtSettings["Secret"]!)
+        ),
+        ClockSkew = TimeSpan.Zero // Biar expiry token pas tepat waktu
+    };
 });
+
+builder.Services.AddScoped<JwtHelper>();
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCors(options =>
 {
@@ -61,14 +81,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowFrontend");
-
-app.UseCookiePolicy(new CookiePolicyOptions
-{
-    MinimumSameSitePolicy = SameSiteMode.None,
-    Secure = CookieSecurePolicy.Always
-});
-
-app.UseSession();
 
 app.UseAuthentication();
 

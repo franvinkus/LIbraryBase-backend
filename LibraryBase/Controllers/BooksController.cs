@@ -2,6 +2,7 @@
 using LibraryBase.Model;
 using LibraryBase.Query;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
@@ -26,6 +27,7 @@ namespace LibraryBase.Controllers
             
         }
         // GET: api/<BooksController>
+        [Authorize(Roles = "Admin")]
         [HttpGet("Get-Books")]
         public async Task<IActionResult> Get()
         {
@@ -35,6 +37,7 @@ namespace LibraryBase.Controllers
         }
 
         // POST api/<BooksController>
+        [Authorize(Roles = "Admin")]
         [HttpPost("Add-Book")]
         public async Task<IActionResult> Post([FromBody] PostBooksQuery dto)
         {
@@ -56,6 +59,7 @@ namespace LibraryBase.Controllers
         }
 
         // PUT api/<BooksController>/5
+        [Authorize(Roles = "Admin")]
         [HttpPut("Edit-Book/{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] PutBooksQuery dto)
         {
@@ -86,6 +90,7 @@ namespace LibraryBase.Controllers
         }
 
         // DELETE api/<BooksController>/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("Delete-Book/{id}")]
         public async Task<IActionResult> Delete(int id)
         {

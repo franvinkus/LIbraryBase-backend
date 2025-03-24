@@ -16,13 +16,15 @@ namespace LibraryBase.Controllers
         public readonly IValidator<SignupCustomerQuery> _signupCustomerValidator;
         public readonly IValidator<LoginUserQuery> _loginValidator;
         public readonly IValidator<SignupAdminQuery> _signupAdminValidator;
+        private readonly JwtHelper _jwtHelper;
 
-        public AuthContoller(IMediator mediator, IValidator<SignupCustomerQuery> signupCustomerValidator, IValidator<LoginUserQuery> loginValidator, IValidator<SignupAdminQuery> signupAdminValidator)
+        public AuthContoller(IMediator mediator, IValidator<SignupCustomerQuery> signupCustomerValidator, IValidator<LoginUserQuery> loginValidator, IValidator<SignupAdminQuery> signupAdminValidator, JwtHelper jwtHelper)
         {
             _mediator = mediator;
             _signupCustomerValidator = signupCustomerValidator;
             _loginValidator = loginValidator;
             _signupAdminValidator = signupAdminValidator;
+            _jwtHelper = jwtHelper;
         }
 
         // POST api/<AuthContoller>
@@ -65,13 +67,7 @@ namespace LibraryBase.Controllers
                 });
             }
             var send = await _mediator.Send(dto);
-            HttpContext.Session.SetInt32("UserId", send.userId);
-
-            var sessionUser = HttpContext.Session.GetString("UserId");
-            Console.WriteLine("🔍 SESSION DI BACKEND (sebelum set): " + sessionUser);
-
-            HttpContext.Session.SetString("UserId", send.userId.ToString());
-
+            var token = _jwtHelper.GenerateToken(send.userId.ToString(), send.role);
 
             return Ok(send);
         }

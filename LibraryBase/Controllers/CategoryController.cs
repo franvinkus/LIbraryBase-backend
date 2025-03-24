@@ -4,6 +4,7 @@ using Library.Entities;
 using LibraryBase.Model;
 using LibraryBase.Query;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -27,6 +28,7 @@ namespace LibraryBase.Controllers
             _deleteCateValidator = deleteCateValidator;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("Get-Category")]
         public async Task<IActionResult> Get()
         {
@@ -36,6 +38,7 @@ namespace LibraryBase.Controllers
         }
 
         // POST api/<AdminCRUDController>
+        [Authorize(Roles = "Admin")]
         [HttpPost("Add-Category")]
         public async Task<IActionResult> Post([FromBody] PostCategoryQuery dto)
         {
@@ -57,6 +60,7 @@ namespace LibraryBase.Controllers
         }
 
         // PUT api/<AdminCRUDController>/5
+        [Authorize(Roles = "Admin")]
         [HttpPut("Edit-Category/{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] PutCategoryQuery dto)
         {
@@ -78,6 +82,7 @@ namespace LibraryBase.Controllers
         }
 
         // DELETE api/<AdminCRUDController>/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
