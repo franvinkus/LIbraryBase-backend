@@ -73,12 +73,7 @@ namespace LibraryBase.Controllers
                     Extensions = { ["errors"] = validation.Errors.ToDictionary(e => e.PropertyName, e => e.ErrorMessage) }
                 });
             }
-            var result = await _mediator.Send(new PutCategoryQueryWithId
-            {
-                categoryId = id,
-                categoryName = dto.categoryName
-
-            });
+            var result = await _mediator.Send(dto);
             return Ok(result);
         }
 

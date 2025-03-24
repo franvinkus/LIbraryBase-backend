@@ -6,7 +6,5 @@ namespace LibraryBase.Model
     {
         [Required]
         public string categoryName { get; set; } = string.Empty;
-        [Required]
-        public int createdBy { get; set; }
     }
 }

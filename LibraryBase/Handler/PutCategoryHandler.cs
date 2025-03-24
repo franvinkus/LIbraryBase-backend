@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LibraryBase.Handler
 {
-    public class PutCategoryHandler : IRequestHandler<PutCategoryQueryWithId, PutCategoryModel>
+    public class PutCategoryHandler : IRequestHandler<PutCategoryQuery, PutCategoryModel>
     {
         public readonly LibraryBaseContext _db;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -15,10 +15,10 @@ namespace LibraryBase.Handler
             _db = db;
             _httpContextAccessor = httpContextAccessor;
         }
-        public async Task<PutCategoryModel> Handle(PutCategoryQueryWithId request, CancellationToken cancellationToken)
+        public async Task<PutCategoryModel> Handle(PutCategoryQuery request, CancellationToken cancellationToken)
         {
             var category = await _db.Categories
-                .Where(x => x.CategoryId == request.categoryId)
+                .Where(x => x.CategoryId == request.cateId)
                 .FirstOrDefaultAsync();
 
             if (category == null)
