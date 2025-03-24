@@ -1,4 +1,5 @@
-﻿using LibraryBase.Model;
+﻿using System.Text.Json.Serialization;
+using LibraryBase.Model;
 using MediatR;
 
 namespace LibraryBase.Query
@@ -7,6 +8,7 @@ namespace LibraryBase.Query
     {
         public int categoryId { get; set; }
         public string categoryName { get; set; } = string.Empty;
+        [JsonIgnore]
         public int updatedBy { get; set; }
     }
 }

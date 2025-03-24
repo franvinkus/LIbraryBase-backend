@@ -65,6 +65,7 @@ namespace LibraryBase.Controllers
                 });
             }
             var send = await _mediator.Send(dto);
+            HttpContext.Session.SetInt32("UserId", send.userId);
             return Ok(send);
         }
 

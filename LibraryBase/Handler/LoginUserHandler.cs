@@ -33,6 +33,7 @@ namespace LibraryBase.Handler
 
             return new LoginUserModel
             {
+                userId = user.UserId,
                 userName = request.userName,
                 email = request.email,
                 msg = $"Login Successful, {user.Username}, {user.Role.RoleName}"

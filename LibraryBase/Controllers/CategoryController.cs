@@ -40,8 +40,15 @@ namespace LibraryBase.Controllers
         public async Task<IActionResult> Post([FromBody] PostCategoryQuery dto)
         {
             var validation = _postCateValidator.Validate(dto);
-            var send = await _mediator.Send(dto);
-            return Ok(send);
+            var adminId = HttpContext.Session.GetInt32("AdminID");
+            if (adminId == null)
+            {
+                return Unauthorized(new { message = "Admin belum login" });
+            }
+
+            dto.createdBy = adminId.Value;
+            var result = await _mediator.Send(dto);
+            return Ok(result);
         }
 
         // PUT api/<AdminCRUDController>/5
@@ -64,8 +71,7 @@ namespace LibraryBase.Controllers
             var result = await _mediator.Send(new PutCategoryQueryWithId
             {
                 categoryId = id,
-                categoryName = dto.categoryName,
-                updatedBy = dto.updatedBy
+                categoryName = dto.categoryName
             });
             return Ok(result);
         }

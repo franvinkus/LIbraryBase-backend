@@ -4,6 +4,7 @@ namespace LibraryBase.Model
 {
     public class LoginUserModel
     {
+        public int userId { get; set; }
         [Required]
         public string userName {  get; set; } = string.Empty;
         [Required]
