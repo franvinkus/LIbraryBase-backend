@@ -16,6 +16,12 @@ namespace LibraryBase.Handler
         public async Task<SignupAdminModel> Handle(SignupAdminQuery request, CancellationToken cancellationToken)
         {
             var defaultRole = await _db.Roles.FirstOrDefaultAsync(r => r.RoleName == "Admin", cancellationToken);
+
+            if (defaultRole == null)
+            {
+                throw new InvalidOperationException("Role 'Admin' tidak ditemukan di database.");
+            }
+
             var newUser = new User
             {
                 Username = request.userName,

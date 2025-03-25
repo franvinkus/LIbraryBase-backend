@@ -17,6 +17,8 @@ public partial class Book
 
     public DateTime? AvailabilityDate { get; set; }
 
+    public string? Img { get; set; }
+
     public DateTime? CreatedAt { get; set; }
 
     public int? CreatedBy { get; set; }

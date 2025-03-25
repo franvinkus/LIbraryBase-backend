@@ -1,7 +1,7 @@
-﻿CREATE DATABASE LibraryBase
+﻿CREATE DATABASE LibraryBase;
 GO
 
-USE LibraryBase
+USE LibraryBase;
 GO
 
 CREATE TABLE Roles (
@@ -39,6 +39,7 @@ CREATE TABLE Books (
     description TEXT NULL,
     availability BIT DEFAULT 1, -- 1 = tersedia, 0 = dipinjam
     availability_date DATETIME NULL,
+    img VARCHAR(255) NULL, -- Tambahkan kolom img untuk menyimpan path gambar
     created_at DATETIME DEFAULT GETDATE(),
     created_by INT NULL,
     updated_at DATETIME DEFAULT GETDATE(),

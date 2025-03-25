@@ -16,6 +16,12 @@ namespace LibraryBase.Handler
         public async Task<SignupCustomerModel> Handle(SignupCustomerQuery request, CancellationToken cancellationToken)
         {
             var defaultRole = await _db.Roles.FirstOrDefaultAsync(r => r.RoleName == "Customer", cancellationToken);
+
+            if (defaultRole == null)
+            {
+                throw new InvalidOperationException("Role 'Customer' tidak ditemukan di database.");
+            }
+
             var newUser = new User
             {
                 Username = request.userName,

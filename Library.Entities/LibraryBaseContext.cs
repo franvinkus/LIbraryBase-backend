@@ -24,11 +24,12 @@ public partial class LibraryBaseContext : DbContext
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Book>(entity =>
         {
-            entity.HasKey(e => e.BookId).HasName("PK__Books__490D1AE11F8958C2");
+            entity.HasKey(e => e.BookId).HasName("PK__Books__490D1AE133A680E5");
 
             entity.Property(e => e.BookId).HasColumnName("book_id");
             entity.Property(e => e.Author)
@@ -49,6 +50,10 @@ public partial class LibraryBaseContext : DbContext
             entity.Property(e => e.Description)
                 .HasColumnType("text")
                 .HasColumnName("description");
+            entity.Property(e => e.Img)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("img");
             entity.Property(e => e.Title)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -70,7 +75,7 @@ public partial class LibraryBaseContext : DbContext
                         .HasConstraintName("FK__BookCateg__book___4AB81AF0"),
                     j =>
                     {
-                        j.HasKey("BookId", "CategoryId").HasName("PK__BookCate__1459F47AB347ABD4");
+                        j.HasKey("BookId", "CategoryId").HasName("PK__BookCate__1459F47ADB82A9C9");
                         j.ToTable("BookCategories");
                         j.IndexerProperty<int>("BookId").HasColumnName("book_id");
                         j.IndexerProperty<int>("CategoryId").HasColumnName("category_id");
@@ -79,7 +84,7 @@ public partial class LibraryBaseContext : DbContext
 
         modelBuilder.Entity<Booking>(entity =>
         {
-            entity.HasKey(e => e.BookingId).HasName("PK__Booking__5DE3A5B193F81E71");
+            entity.HasKey(e => e.BookingId).HasName("PK__Booking__5DE3A5B14A45D613");
 
             entity.ToTable("Booking");
 
@@ -124,11 +129,9 @@ public partial class LibraryBaseContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK__Categori__D54EE9B4D9B38543");
+            entity.HasKey(e => e.CategoryId).HasName("PK__Categori__D54EE9B441A137C0");
 
-            entity.HasIndex(e => e.CategoryName, "UQ__Categori__5189E25570F79D59").IsUnique();
-
-            entity.HasIndex(e => e.CategoryName, "UQ__Categori__5189E2557CE6FD06").IsUnique();
+            entity.HasIndex(e => e.CategoryName, "UQ__Categori__5189E255A49CE424").IsUnique();
 
             entity.Property(e => e.CategoryId).HasColumnName("category_id");
             entity.Property(e => e.CategoryName)
@@ -149,11 +152,9 @@ public partial class LibraryBaseContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__Roles__760965CCAA80E915");
+            entity.HasKey(e => e.RoleId).HasName("PK__Roles__760965CC0D34A4A2");
 
-            entity.HasIndex(e => e.RoleName, "UQ__Roles__783254B14BFFF209").IsUnique();
-
-            entity.HasIndex(e => e.RoleName, "UQ__Roles__783254B16136D249").IsUnique();
+            entity.HasIndex(e => e.RoleName, "UQ__Roles__783254B1F058C48E").IsUnique();
 
             entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.RoleName)
@@ -164,15 +165,11 @@ public partial class LibraryBaseContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__B9BE370F413DD234");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__B9BE370F98FD0ED6");
 
-            entity.HasIndex(e => e.Email, "UQ__Users__AB6E616447AF54BE").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Users__AB6E6164A6B159DF").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__Users__AB6E616493EC661D").IsUnique();
-
-            entity.HasIndex(e => e.Username, "UQ__Users__F3DBC572342611BD").IsUnique();
-
-            entity.HasIndex(e => e.Username, "UQ__Users__F3DBC572FBBA5463").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Users__F3DBC57209FE395F").IsUnique();
 
             entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.CreatedAt)
