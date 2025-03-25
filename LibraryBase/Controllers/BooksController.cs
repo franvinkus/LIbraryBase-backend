@@ -28,7 +28,6 @@ namespace LibraryBase.Controllers
             
         }
         // GET: api/<BooksController>
-        [Authorize(Roles = "Admin")]
         [HttpGet("Get-Books")]
         public async Task<IActionResult> Get()
         {
