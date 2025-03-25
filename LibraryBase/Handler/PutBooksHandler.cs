@@ -1,4 +1,5 @@
-﻿using Library.Entities;
+﻿using System.Security.Claims;
+using Library.Entities;
 using LibraryBase.Model;
 using LibraryBase.Query;
 using MediatR;
@@ -9,14 +10,17 @@ namespace LibraryBase.Handler
     public class PutBooksHandler : IRequestHandler<PutBooksQueryWithId, PutBooksModel>
     {
         public readonly LibraryBaseContext _db;
-        public PutBooksHandler(LibraryBaseContext db)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public PutBooksHandler(LibraryBaseContext db, IHttpContextAccessor httpContextAccessor)
         {
             _db = db;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<PutBooksModel> Handle(PutBooksQueryWithId request, CancellationToken cancellationToken)
         {
             var book = await _db.Books
                 .Where(x => x.BookId == request.bookId)
+                .Include(b => b.Categories)
                 .FirstOrDefaultAsync();
 
             if (book == null)
@@ -25,6 +29,7 @@ namespace LibraryBase.Handler
             }
 
             book.Categories.Clear();
+            await _db.SaveChangesAsync(cancellationToken);
 
             var newCategories = await _db.Categories
                 .Where(x => request.categoryIds.Contains(x.CategoryId))
@@ -35,11 +40,14 @@ namespace LibraryBase.Handler
                 book.Categories.Add(category);
             }
 
+            var userIdString = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = int.Parse(userIdString);
+
             book.Title = request.title;
             book.Author = request.author;
             book.Description = request.description;
             book.UpdatedAt = DateTime.UtcNow;
-            book.UpdatedBy = request.updatedBy;
+            book.UpdatedBy = userId;
 
             var response = new PutBooksModel
             {
@@ -47,7 +55,7 @@ namespace LibraryBase.Handler
                 title = request.title,
                 author = request.author,
                 description = request.description,
-                updatedBy = request.updatedBy,
+                updatedBy = userId,
                 updatedAt = book.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? ""
             };
 

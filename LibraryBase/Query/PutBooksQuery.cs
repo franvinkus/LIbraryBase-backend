@@ -14,7 +14,5 @@ namespace LibraryBase.Query
         public string author { get; set; } = string.Empty;
 
         public string description { get; set; } = string.Empty;
-
-        public int? updatedBy { get; set; }
     }
 }

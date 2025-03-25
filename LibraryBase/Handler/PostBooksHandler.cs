@@ -1,4 +1,5 @@
-﻿using Library.Entities;
+﻿using System.Security.Claims;
+using Library.Entities;
 using LibraryBase.Model;
 using LibraryBase.Query;
 using MediatR;
@@ -9,17 +10,22 @@ namespace LibraryBase.Handler
     public class PostBooksHandler : IRequestHandler<PostBooksQuery, PostBooksModel>
     {
         public readonly LibraryBaseContext _db;
-        public PostBooksHandler(LibraryBaseContext db)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public PostBooksHandler(LibraryBaseContext db, IHttpContextAccessor httpContextAccessor)
         {
             _db = db;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<PostBooksModel> Handle(PostBooksQuery request, CancellationToken cancellationToken)
         {
+            var userIdString = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = int.Parse(userIdString);
             var newBooks = new Book
             {
                 Title = request.title,
                 Author = request.author,
-                Description = request.description
+                Description = request.description,
+                CreatedBy = userId
             };
 
             var categories = await _db.Categories

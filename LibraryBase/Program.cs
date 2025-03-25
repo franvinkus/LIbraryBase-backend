@@ -53,7 +53,7 @@ builder.Services.AddDbContextPool<LibraryBaseContext>(options =>
 
 builder.Services.AddMediatR(
     Assembly.GetExecutingAssembly(),
-    Assembly.Load("LibraryBase") // sesuaikan dengan nama project LibraryBase kamu
+    Assembly.Load("LibraryBase") 
 );
 
 

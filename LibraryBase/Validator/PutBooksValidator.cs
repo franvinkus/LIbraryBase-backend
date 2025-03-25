@@ -22,10 +22,6 @@ namespace LibraryBase.Validator
             RuleFor(x => x.author)
                 .NotEmpty()
                 .WithMessage("Please input the author of the book");
-
-            RuleFor(x => x.updatedBy)
-                .GreaterThan(0)
-                .WithMessage("Please enter Your Id");
         }
     }
 }

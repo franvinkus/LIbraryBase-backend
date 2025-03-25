@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Security.Claims;
+using FluentValidation;
 using LibraryBase.Model;
 using LibraryBase.Query;
 using MediatR;
@@ -54,6 +55,14 @@ namespace LibraryBase.Controllers
                     Extensions = { ["errors"] = validation.Errors.ToDictionary(e => e.PropertyName, e => e.ErrorMessage) }
                 });
             }
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new { message = "Unauthorized: UserId not found" });
+            }
+
+            var adminId = int.Parse(userId);
             var result = await _mediator.Send(dto);
             return Ok(result);
         }
@@ -83,8 +92,7 @@ namespace LibraryBase.Controllers
                 categoryIds = dto.categoryIds,
                 title = dto.title,
                 author = dto.author,
-                description = dto.description,
-                updatedBy = dto.updatedBy,
+                description = dto.description
             });
             return Ok(result);
         }
