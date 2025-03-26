@@ -48,17 +48,12 @@ namespace LibraryBase.Handler
             }
 
             booking.Status = "borrowed";
-            booking.ReturnDate = DateTime.UtcNow;
-
-            var book = booking.Book;
-            book.Availability = true;
             await _db.SaveChangesAsync(cancellationToken);
 
             return new PutBorrowBookingModel
             {
                 bookingId = booking.BookingId,
                 booksId = booking.BookId,
-                returnDate = booking.ReturnDate?.ToString("yyyy-MM-dd HH:mm:ss") ?? "",
                 status = booking.Status,
                 msg = "You have picked up the book. Don't Forget to return it before the deadline!"
             };

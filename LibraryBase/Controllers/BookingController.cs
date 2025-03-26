@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using FluentValidation;
 using LibraryBase.Query;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +13,12 @@ namespace LibraryBase.Controllers
     public class BookingController : ControllerBase
     {
         private readonly IMediator _mediator;
+        public readonly IValidator<DeleteBookingQuery> _validator;
 
-        public BookingController(IMediator mediator)
+        public BookingController(IMediator mediator, IValidator<DeleteBookingQuery> validator)
         {
             _mediator = mediator;
+            _validator = validator;
         }
 
         // GET: api/<BookingController>
@@ -26,43 +29,60 @@ namespace LibraryBase.Controllers
         }
 
         // POST api/<BookingController>
-        [HttpPost("{bookId}/Request-Borrow")]
-        public async Task<IActionResult> Post(int bookId, CancellationToken cancellationToken)
+        [HttpPost("{bookingId}/Request-Borrow")]
+        public async Task<IActionResult> Post(int bookingId, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new PostBookingQuery(bookId), cancellationToken);
+            var result = await _mediator.Send(new PostBookingQuery(bookingId), cancellationToken);
             return Ok(result);
         }
 
         // PUT api/<BookingController>/5
-        [HttpPut("{bookId}/Borrow")]
-        public async Task<IActionResult> Borrow(int bookId, CancellationToken cancellationToken)
+        [HttpPut("{bookingId}/Borrow")]
+        public async Task<IActionResult> Borrow(int bookingId, CancellationToken cancellationToken)
         {
-            if (bookId <= 0)
+            if (bookingId <= 0)
             {
                 return BadRequest("Invalid book ID.");
             }
 
-            var result = await _mediator.Send(new PutBorrowBookingQuery(bookId), cancellationToken);
+            var result = await _mediator.Send(new PutBorrowBookingQuery(bookingId), cancellationToken);
             return Ok(result);
         }
 
         // PUT api/<BookingController>/5
-        [HttpPut("{bookId}/Return")]
-        public async Task<IActionResult> Return(int bookId, CancellationToken cancellationToken)
+        [HttpPut("{bookingId}/Return")]
+        public async Task<IActionResult> Return(int bookingId, CancellationToken cancellationToken)
         {
-            if (bookId <= 0)
+            if (bookingId <= 0)
             {
                 return BadRequest("Invalid book ID.");
             }
 
-            var result = await _mediator.Send(new PutReturnBookingQuery(bookId), cancellationToken);
+            var result = await _mediator.Send(new PutReturnBookingQuery(bookingId), cancellationToken);
             return Ok(result);
         }
 
         // DELETE api/<BookingController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{bookingId}/Cancel")]
+        public async Task<IActionResult> Delete(int bookingId)
         {
+            var validation = _validator.Validate(new DeleteBookingQuery(bookingId));
+
+            if (!validation.IsValid)
+            {
+                return BadRequest(new ProblemDetails
+                {
+                    Status = 404,
+                    Type = "https://httpstatuses.com/404",
+                    Title = "Data Tidak Sesuai",
+                    Detail = $"Masukkan Data yang sesuai",
+                    Instance = HttpContext.Request.Path,
+                    Extensions = { ["errors"] = validation.Errors.ToDictionary(e => e.PropertyName, e => e.ErrorMessage) }
+                });
+            }
+
+            var result = await _mediator.Send(bookingId);
+            return Ok(result);
         }
     }
 }
