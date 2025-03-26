@@ -69,7 +69,7 @@ namespace LibraryBase.Controllers
         // PUT api/<BooksController>/5
         [Authorize(Roles = "Admin")]
         [HttpPut("Edit-Book/{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] PutBooksQuery dto)
+        public async Task<IActionResult> Put(int id, [FromForm] PutBooksQuery dto)
         {
             var validation = _putBooksValidator.Validate(dto);
             if (!validation.IsValid)

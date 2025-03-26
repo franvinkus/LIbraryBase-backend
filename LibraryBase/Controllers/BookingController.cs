@@ -2,6 +2,7 @@
 using FluentValidation;
 using LibraryBase.Query;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -22,13 +23,17 @@ namespace LibraryBase.Controllers
         }
 
         // GET: api/<BookingController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        [Authorize(Roles = "Customer")]
+        [HttpGet("See-All-Borrow")]
+        public async Task<IActionResult> Get()
         {
-            return new string[] { "value1", "value2" };
+            var request = new GetBookingQuery();
+            var result = await _mediator.Send(request);
+            return Ok(result);
         }
 
         // POST api/<BookingController>
+        [Authorize(Roles = "Customer")]
         [HttpPost("{bookingId}/Request-Borrow")]
         public async Task<IActionResult> Post(int bookingId, CancellationToken cancellationToken)
         {
@@ -37,6 +42,7 @@ namespace LibraryBase.Controllers
         }
 
         // PUT api/<BookingController>/5
+        [Authorize(Roles = "Customer")]
         [HttpPut("{bookingId}/Borrow")]
         public async Task<IActionResult> Borrow(int bookingId, CancellationToken cancellationToken)
         {
@@ -50,6 +56,7 @@ namespace LibraryBase.Controllers
         }
 
         // PUT api/<BookingController>/5
+        [Authorize(Roles = "Customer")]
         [HttpPut("{bookingId}/Return")]
         public async Task<IActionResult> Return(int bookingId, CancellationToken cancellationToken)
         {
@@ -63,6 +70,7 @@ namespace LibraryBase.Controllers
         }
 
         // DELETE api/<BookingController>/5
+        [Authorize(Roles = "Customer")]
         [HttpDelete("{bookingId}/Cancel")]
         public async Task<IActionResult> Delete(int bookingId)
         {

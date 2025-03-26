@@ -11,10 +11,12 @@ namespace LibraryBase.Handler
     {
         public readonly LibraryBaseContext _db;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public PutBooksHandler(LibraryBaseContext db, IHttpContextAccessor httpContextAccessor)
+        private readonly IWebHostEnvironment _env;
+        public PutBooksHandler(LibraryBaseContext db, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment env)
         {
             _db = db;
             _httpContextAccessor = httpContextAccessor;
+            _env = env;
         }
         public async Task<PutBooksModel> Handle(PutBooksQueryWithId request, CancellationToken cancellationToken)
         {
@@ -42,6 +44,29 @@ namespace LibraryBase.Handler
 
             var userIdString = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var userId = int.Parse(userIdString);
+
+            string? imgPath = null;
+
+            if (request.bookImage != null && request.bookImage.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                var fileName = $"{Guid.NewGuid()}_{request.bookImage.FileName}";
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await request.bookImage.CopyToAsync(stream);
+                }
+
+                // Simpan path gambar ke database
+                book.Img = $"/uploads/{fileName}";
+            }
+
 
             book.Title = request.title;
             book.Author = request.author;
