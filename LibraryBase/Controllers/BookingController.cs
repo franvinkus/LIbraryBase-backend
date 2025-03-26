@@ -25,15 +25,8 @@ namespace LibraryBase.Controllers
             return new string[] { "value1", "value2" };
         }
 
-        // GET api/<BookingController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         // POST api/<BookingController>
-        [HttpPost("{bookId}/Borrow")]
+        [HttpPost("{bookId}/Request-Borrow")]
         public async Task<IActionResult> Post(int bookId, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(new PostBookingQuery(bookId), cancellationToken);
@@ -41,8 +34,21 @@ namespace LibraryBase.Controllers
         }
 
         // PUT api/<BookingController>/5
+        [HttpPut("{bookId}/Borrow")]
+        public async Task<IActionResult> Borrow(int bookId, CancellationToken cancellationToken)
+        {
+            if (bookId <= 0)
+            {
+                return BadRequest("Invalid book ID.");
+            }
+
+            var result = await _mediator.Send(new PutBorrowBookingQuery(bookId), cancellationToken);
+            return Ok(result);
+        }
+
+        // PUT api/<BookingController>/5
         [HttpPut("{bookId}/Return")]
-        public async Task<IActionResult>Put(int bookId, CancellationToken cancellationToken)
+        public async Task<IActionResult> Return(int bookId, CancellationToken cancellationToken)
         {
             if (bookId <= 0)
             {

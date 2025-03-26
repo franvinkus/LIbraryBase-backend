@@ -7,17 +7,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LibraryBase.Handler
 {
-    public class PutReturnBookHandler : IRequestHandler<PutReturnBookingQuery, PutReturnBookingModel>
+    public class PutBorrowBookingHandler : IRequestHandler<PutBorrowBookingQuery, PutBorrowBookingModel>
     {
         private readonly LibraryBaseContext _db;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PutReturnBookHandler(LibraryBaseContext db, IHttpContextAccessor httpContextAccessor)
+        public PutBorrowBookingHandler(LibraryBaseContext db, IHttpContextAccessor httpContextAccessor)
         {
             _db = db;
             _httpContextAccessor = httpContextAccessor;
         }
-        public async Task<PutReturnBookingModel> Handle(PutReturnBookingQuery request, CancellationToken cancellationToken)
+        public async Task<PutBorrowBookingModel> Handle(PutBorrowBookingQuery request, CancellationToken cancellationToken)
         {
             var userIdString = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdString))
@@ -37,25 +37,30 @@ namespace LibraryBase.Handler
                 throw new Exception("Booking not found");
             }
 
+            if (booking.Status == "borrowed")
+            {
+                throw new Exception("Book already picked up");
+            }
+
             if (booking.Status == "returned")
             {
                 throw new Exception("Book already returned");
             }
 
-            booking.Status = "returned";
+            booking.Status = "borrowed";
             booking.ReturnDate = DateTime.UtcNow;
 
             var book = booking.Book;
             book.Availability = true;
             await _db.SaveChangesAsync(cancellationToken);
 
-            return new PutReturnBookingModel
+            return new PutBorrowBookingModel
             {
                 bookingId = booking.BookingId,
                 booksId = booking.BookId,
                 returnDate = booking.ReturnDate?.ToString("yyyy-MM-dd HH:mm:ss") ?? "",
                 status = booking.Status,
-                msg = "You have returned the book, Come again!"
+                msg = "You have picked up the book. Don't Forget to return it before the deadline!"
             };
         }
     }
