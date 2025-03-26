@@ -14,6 +14,8 @@ namespace LibraryBase.Model
         [Required]
         [MaxLength(255)]
         public string description { get; set; } = string.Empty;
+        [Required]
+        public string img { get; set; } = string.Empty;
         
     }
 }

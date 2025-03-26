@@ -39,7 +39,7 @@ namespace LibraryBase.Controllers
         // POST api/<BooksController>
         [Authorize(Roles = "Admin")]
         [HttpPost("Add-Book")]
-        public async Task<IActionResult> Post([FromBody] PostBooksQuery dto)
+        public async Task<IActionResult> Post([FromForm] PostBooksQuery dto)
         {
             var validation = _postBooksValidator.Validate(dto);
             if (!validation.IsValid)
