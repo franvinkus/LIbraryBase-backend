@@ -14,5 +14,6 @@ namespace LibraryBase.Query
         public string author { get; set; } = string.Empty;
 
         public string description { get; set; } = string.Empty;
+        public IFormFile? bookImage { get; set; }
     }
 }
