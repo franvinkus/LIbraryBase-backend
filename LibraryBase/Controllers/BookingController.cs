@@ -89,7 +89,7 @@ namespace LibraryBase.Controllers
                 });
             }
 
-            var result = await _mediator.Send(bookingId);
+            var result = await _mediator.Send(new DeleteBookingQuery(bookingId));
             return Ok(result);
         }
     }

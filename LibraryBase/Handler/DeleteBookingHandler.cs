@@ -26,17 +26,6 @@ namespace LibraryBase.Handler
             }
             var userId = int.Parse(userIdString);
 
-            var booking = await _db.Bookings
-                .Where(x => x.BookingId == request.deletedId)
-                .FirstOrDefaultAsync();
-
-            if (booking == null)
-            {
-                throw new Exception("Please input a valid ID");
-            }
-
-            _db.Bookings.Remove(booking);
-
             var status = await _db.Bookings
             .Include(b => b.Book)
             .Where(b => b.BookingId == request.deletedId && b.UserId == userId)
@@ -47,7 +36,9 @@ namespace LibraryBase.Handler
                 throw new Exception("Booking not found");
             }
 
-            var book = booking.Book;
+            _db.Bookings.Remove(status);
+
+            var book = status.Book;
             book.Availability = true;
             await _db.SaveChangesAsync(cancellationToken);
 
