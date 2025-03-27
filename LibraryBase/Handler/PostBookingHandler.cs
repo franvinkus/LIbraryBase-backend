@@ -79,6 +79,7 @@ namespace LibraryBase.Handler
             await _db.SaveChangesAsync(cancellationToken);
 
             book.Availability = false;
+            book.AvailabilityDate = now.AddDays(9);
             await _db.SaveChangesAsync(cancellationToken);
 
             return new PostBookingModel

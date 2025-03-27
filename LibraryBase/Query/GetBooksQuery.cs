@@ -13,6 +13,7 @@ namespace LibraryBase.Query
         public string description { get; set; } = string.Empty;
         public string createdAt { get; set; } = string.Empty;
         public string updatedAt { get; set; } = string.Empty;
+        public string availabilityDate { get; set; } = string.Empty;
         public string img { get; set; }
     }
 }

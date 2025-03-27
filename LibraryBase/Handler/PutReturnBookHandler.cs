@@ -47,6 +47,7 @@ namespace LibraryBase.Handler
 
             var book = booking.Book;
             book.Availability = true;
+            book.AvailabilityDate = DateTime.UtcNow;
             await _db.SaveChangesAsync(cancellationToken);
 
             return new PutReturnBookingModel

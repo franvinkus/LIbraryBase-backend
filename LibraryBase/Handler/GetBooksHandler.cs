@@ -31,6 +31,7 @@ namespace LibraryBase.Handler
                     title = x.Title,
                     author = x.Author,
                     description = x.Description,
+                    availabilityDate = x.AvailabilityDate.HasValue? x.AvailabilityDate.Value.ToString("yyyy-MM-dd HH:mm:ss") : "",
                     createdAt = x.CreatedAt.HasValue ? x.CreatedAt.Value.ToString("yyyy-MM-dd HH:mm:ss") : "",
                     updatedAt = x.UpdatedAt.HasValue ? x.UpdatedAt.Value.ToString("yyyy-MM-dd HH:mm:ss") : "",
                     imageUrl = string.IsNullOrEmpty(x.Img)
