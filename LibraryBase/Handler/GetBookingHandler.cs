@@ -1,4 +1,5 @@
-﻿using Library.Entities;
+﻿using System.Security.Claims;
+using Library.Entities;
 using LibraryBase.Model;
 using LibraryBase.Query;
 using MediatR;
@@ -20,16 +21,25 @@ namespace LibraryBase.Handler
             var httpContext = _httpContextAccessor.HttpContext;
             var baseUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}";
 
+            var userIdString = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                throw new UnauthorizedAccessException("User is not authenticated.");
+            }
+
+            var userId = int.Parse(userIdString);
+
             var bookings = await _db.Bookings
                 .Include(b => b.Book)
                 .ThenInclude(c => c.Categories)
+                .Where(b => b.UserId == userId)
                 .ToListAsync(cancellationToken);
             
             var bookinglist = bookings
                 .Select(b => new GetBookingModel
                 {
                     bookingId = b.BookingId,
-                    bookId = b.BookingId,
+                    bookId = b.BookId,
                     bookTitle = b.Book.Title,
                     bookImage = string.IsNullOrEmpty(b.Book.Img)
                     ? null

@@ -19,7 +19,6 @@ namespace LibraryBase.Handler
         }
         public async Task<PostBookingModel> Handle(PostBookingQuery request, CancellationToken cancellationToken)
         {
-            Console.WriteLine("DEBUG: PostBookingHandler.Handle() is called");
             var userIdString = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdString))
             {
@@ -50,11 +49,6 @@ namespace LibraryBase.Handler
             var existingBook = await _db.Bookings
                 .Where(x => x.BookId == request.id && x.UserId == userId && x.ReturnDate == null)
                 .FirstOrDefaultAsync(cancellationToken);
-
-            Console.WriteLine($"Debug: Checking existing booking for UserId {userId} and BookId {request.id}");
-            Console.WriteLine(existingBook != null
-                ? $"Found booking with BookingId {existingBook.BookId}, Status: {existingBook.Status}"
-                : "No existing booking found.");
 
             if (existingBook != null)
             {

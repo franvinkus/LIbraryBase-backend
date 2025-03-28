@@ -22,6 +22,19 @@ namespace LibraryBase.Controllers
             _validator = validator;
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpGet("See-All-Borrow/Admin")]
+        public async Task<IActionResult> GetAll(
+            [FromQuery] string? username,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10
+            )
+        {
+            var request = new GetAllBookingQuery(username, pageNumber, pageSize);
+            var result = await _mediator.Send(request);
+            return Ok(result);
+        }
+
         // GET: api/<BookingController>
         [Authorize(Roles = "Customer")]
         [HttpGet("See-All-Borrow")]
@@ -31,6 +44,7 @@ namespace LibraryBase.Controllers
             var result = await _mediator.Send(request);
             return Ok(result);
         }
+
 
         // POST api/<BookingController>
         [Authorize(Roles = "Customer")]
