@@ -42,39 +42,39 @@ namespace LibraryBase.Controllers
         }
 
         // PUT api/<BookingController>/5
-        [Authorize(Roles = "Customer")]
-        [HttpPut("{bookingId}/Borrow")]
-        public async Task<IActionResult> Borrow(int bookingId, CancellationToken cancellationToken)
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{userId}/{bookingId}/Borrow")]
+        public async Task<IActionResult> Borrow(int userId,int bookingId, CancellationToken cancellationToken)
         {
             if (bookingId <= 0)
             {
                 return BadRequest("Invalid book ID.");
             }
 
-            var result = await _mediator.Send(new PutBorrowBookingQuery(bookingId), cancellationToken);
+            var result = await _mediator.Send(new PutBorrowBookingQuery(userId, bookingId), cancellationToken);
             return Ok(result);
         }
 
         // PUT api/<BookingController>/5
-        [Authorize(Roles = "Customer")]
-        [HttpPut("{bookingId}/Return")]
-        public async Task<IActionResult> Return(int bookingId, CancellationToken cancellationToken)
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{userId}/{bookingId}/Return")]
+        public async Task<IActionResult> Return(int userId, int bookingId, CancellationToken cancellationToken)
         {
             if (bookingId <= 0)
             {
                 return BadRequest("Invalid book ID.");
             }
 
-            var result = await _mediator.Send(new PutReturnBookingQuery(bookingId), cancellationToken);
+            var result = await _mediator.Send(new PutReturnBookingQuery(userId, bookingId), cancellationToken);
             return Ok(result);
         }
 
         // DELETE api/<BookingController>/5
-        [Authorize(Roles = "Customer")]
-        [HttpDelete("{bookingId}/Cancel")]
-        public async Task<IActionResult> Delete(int bookingId)
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{userId}/{bookingId}/Cancel")]
+        public async Task<IActionResult> Delete(int userId, int bookingId)
         {
-            var validation = _validator.Validate(new DeleteBookingQuery(bookingId));
+            var validation = _validator.Validate(new DeleteBookingQuery(userId,bookingId));
 
             if (!validation.IsValid)
             {
@@ -89,7 +89,7 @@ namespace LibraryBase.Controllers
                 });
             }
 
-            var result = await _mediator.Send(new DeleteBookingQuery(bookingId));
+            var result = await _mediator.Send(new DeleteBookingQuery(userId, bookingId));
             return Ok(result);
         }
     }

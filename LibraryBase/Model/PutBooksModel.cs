@@ -17,5 +17,7 @@ namespace LibraryBase.Model
         public int? updatedBy { get; set; }
         [Required]
         public string updatedAt { get; set; } = string.Empty;
+
+        public string img { get; set; } = string.Empty;
     }
 }

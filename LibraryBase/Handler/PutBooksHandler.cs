@@ -47,25 +47,25 @@ namespace LibraryBase.Handler
 
             string? imgPath = null;
 
-            if (request.bookImage != null && request.bookImage.Length > 0)
-            {
-                var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
-                if (!Directory.Exists(uploadsFolder))
-                {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
+            //if (request.bookImage != null && request.bookImage.Length > 0)
+            //{
+            //    var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
+            //    if (!Directory.Exists(uploadsFolder))
+            //    {
+            //        Directory.CreateDirectory(uploadsFolder);
+            //    }
 
-                var fileName = $"{Guid.NewGuid()}_{request.bookImage.FileName}";
-                var filePath = Path.Combine(uploadsFolder, fileName);
+            //    var fileName = $"{Guid.NewGuid()}_{request.bookImage.FileName}";
+            //    var filePath = Path.Combine(uploadsFolder, fileName);
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await request.bookImage.CopyToAsync(stream);
-                }
+            //    using (var stream = new FileStream(filePath, FileMode.Create))
+            //    {
+            //        await request.bookImage.CopyToAsync(stream);
+            //    }
 
-                // Simpan path gambar ke database
-                book.Img = $"/uploads/{fileName}";
-            }
+            //    // Simpan path gambar ke database
+            //    book.Img = $"/uploads/{fileName}";
+            //}
 
 
             book.Title = request.title;

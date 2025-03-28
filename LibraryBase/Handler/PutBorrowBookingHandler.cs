@@ -19,17 +19,20 @@ namespace LibraryBase.Handler
         }
         public async Task<PutBorrowBookingModel> Handle(PutBorrowBookingQuery request, CancellationToken cancellationToken)
         {
-            var userIdString = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userIdString))
+            var userRole = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
+            if (userRole != "Admin")
             {
-                throw new UnauthorizedAccessException("User is not authenticated.");
+                throw new UnauthorizedAccessException("Only admins can update booking status.");
             }
-            var userId = int.Parse(userIdString);
 
+            var user = await _db.Users
+                .Where(x => x.UserId == request.userId)
+                .FirstOrDefaultAsync(cancellationToken);
 
             var booking = await _db.Bookings
             .Include(b => b.Book)
-            .Where(b => b.BookingId == request.id && b.UserId == userId)
+            .Include(u => u.User)
+            .Where(b => b.BookingId == request.id && b.UserId == user.UserId)
             .FirstOrDefaultAsync(cancellationToken);
 
             if (booking == null)
@@ -55,7 +58,7 @@ namespace LibraryBase.Handler
                 bookingId = booking.BookingId,
                 booksId = booking.BookId,
                 status = booking.Status,
-                msg = "You have picked up the book. Don't Forget to return it before the deadline!"
+                msg = $"{user.Username} has picked up the book."
             };
         }
     }

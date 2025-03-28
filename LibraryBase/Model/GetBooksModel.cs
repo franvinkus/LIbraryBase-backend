@@ -1,4 +1,6 @@
-﻿namespace LibraryBase.Model
+﻿using Microsoft.Identity.Client;
+
+namespace LibraryBase.Model
 {
     public class GetBooksModel
     {
@@ -10,6 +12,7 @@
         public string description { get; set; } = string.Empty;
         public string createdAt { get; set; } = string.Empty;
         public string updatedAt { get; set; } = string.Empty;
+        public string availibility { get; set; } = string.Empty;
         public string availabilityDate { get; set; } = string.Empty;
         public string imageUrl { get; set; }
     }
