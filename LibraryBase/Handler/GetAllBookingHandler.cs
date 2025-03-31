@@ -22,7 +22,7 @@ namespace LibraryBase.Handler
 
             if (!string.IsNullOrEmpty(request.username))
             {
-                query = query.Where(Q => Q.User.Username.ToLower().Contains(request.username.Trim().ToLower()));
+                query = query.Where(Q => Q.User.Username.Contains(request.username.Trim()));
             }
 
             var count = await query.CountAsync();
