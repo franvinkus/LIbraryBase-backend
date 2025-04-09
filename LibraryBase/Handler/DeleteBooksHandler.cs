@@ -24,11 +24,19 @@ namespace LibraryBase.Handler
                 throw new Exception("There's no such book");
             }
 
-            bool hasActiveBookings = await _db.Bookings.AnyAsync(b => b.BookId == request.deletedId);
+            bool hasActiveBookings = await _db.Bookings
+                .AnyAsync(b => b.BookId == request.deletedId && b.Status != "returned");
             if (hasActiveBookings)
             {
                 throw new Exception("Cannot delete this book because it is still referenced in active bookings.");
             }
+
+            var booking = await _db.Bookings
+                .Where(b => b.BookId == request.deletedId)
+                .ToListAsync(cancellationToken);
+
+            // Hapus semua booking terkait buku ini
+            _db.Bookings.RemoveRange(booking);
 
             _db.Books.Remove(book);
             await _db.SaveChangesAsync(cancellationToken);

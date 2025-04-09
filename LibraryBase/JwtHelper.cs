@@ -33,7 +33,7 @@ public class JwtHelper
             issuer: _jwtSettings.Issuer,
             audience: _jwtSettings.Audience,
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
+            expires: DateTime.UtcNow.AddHours(2),
             signingCredentials: creds
         );
 
